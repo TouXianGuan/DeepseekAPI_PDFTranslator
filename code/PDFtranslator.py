@@ -1,16 +1,18 @@
 import sys
 import openai
 from PyPDF2 import PdfReader
+import time
 
 class PDFTranslator:
     def __init__(self, api_key):
         self.client = openai.OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
+        self.total_time = 0
 
     def translate_text(self, text):
         response = self.client.chat.completions.create(
             model="deepseek-chat",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant that translates English to Chinese."},
+                {"role": "system", "content":  "You are a helpful assistant specializing in academic translation, tasked with translating English academic texts to Chinese."},
                 {"role": "user", "content": text},
             ],
             stream=False
@@ -30,22 +32,27 @@ class PDFTranslator:
 
     def translate_pdf(self, input_path, output_path):
         text = self.read_pdf(input_path)
+        print(f"The length of your pdf is {len(text)}.")
         translated_text = ""
         start = 0
         call_count = 0
 
         while start < len(text):
-            end = start + 10000
+            end = start + 20000
             while end < len(text) and text[end] != '.':
                 end += 1
             if end < len(text):
                 end += 1  # Include the period in the chunk
             chunk = text[start:end]
+            start_time = time.time()
             translated_chunk = self.translate_text(chunk)
             translated_text += translated_chunk
-            start = end
             call_count += 1
-            print(f"translate_text has been called {call_count} times.")
+            end_time = time.time()
+            call_time = end_time - start_time
+            self.total_time += call_time
+            print(f"translate_text has been called {call_count} times. Time for this call: {call_time:.2f}s, Total time: {self.total_time:.2f}s")
+            start = end
 
         self.save_txt(output_path, translated_text)
         print(f"Translation saved to {output_path}")

@@ -24,7 +24,7 @@ pip install openai PyPDF2
 
 3. **Run the Script**: Open your command line interface and navigate to the directory where the source code is located. Use the following command to translate a PDF file:  
 ```sh
-python pdf_translator.py <input_pdf_path> <output_txt_path> <deepseek_api_key>
+python PDFtranslator.py <input_pdf_path> <output_txt_path> <deepseek_api_key>
 ```
 - <input_pdf_path>: The path to the input PDF file you want to translate.
 
@@ -36,7 +36,7 @@ python pdf_translator.py <input_pdf_path> <output_txt_path> <deepseek_api_key>
 Here is an example of how to use the script:
 
 ```sh
-python pdf_translator.py ./documents/sample.pdf ./translated/sample_translated.txt YOUR_API_KEY
+python PDFtranslator.py ./documents/sample.pdf ./translated/sample_translated.txt YOUR_API_KEY
 ```
 
 ## Dependencies

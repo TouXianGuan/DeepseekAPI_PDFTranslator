@@ -1,7 +1,6 @@
 import sys
 import openai
 from PyPDF2 import PdfReader
-import time
 
 class PDFTranslator:
     def __init__(self, api_key):
@@ -12,7 +11,7 @@ class PDFTranslator:
         response = self.client.chat.completions.create(
             model="deepseek-chat",
             messages=[
-                {"role": "system", "content":  "You are a helpful assistant specializing in academic translation, tasked with translating English academic texts to Chinese."},
+                {"role": "system", "content": "You are a helpful assistant that translates English to Chinese."},
                 {"role": "user", "content": text},
             ],
             stream=False
@@ -42,18 +41,14 @@ class PDFTranslator:
             while end < len(text) and text[end] != '.':
                 end += 1
             if end < len(text):
-                end += 1  # Include the period in the chunk
+                end += 1
             chunk = text[start:end]
-            start_time = time.time()
             translated_chunk = self.translate_text(chunk)
             translated_text += translated_chunk
-            call_count += 1
-            end_time = time.time()
-            call_time = end_time - start_time
-            self.total_time += call_time
-            print(f"translate_text has been called {call_count} times. Time for this call: {call_time:.2f}s, Total time: {self.total_time:.2f}s")
             start = end
-
+            call_count += 1
+            print(f"Deepseek-v2 API has been called {call_count} times.")
+    
         self.save_txt(output_path, translated_text)
         print(f"Translation saved to {output_path}")
 

@@ -1,6 +1,7 @@
 import sys
 import openai
 from PyPDF2 import PdfReader
+import time
 
 class PDFTranslator:
     def __init__(self, api_key):
@@ -37,17 +38,20 @@ class PDFTranslator:
         call_count = 0
 
         while start < len(text):
-            end = start + 10000
-            while end < len(text) and text[end] != '.':
-                end += 1
-            if end < len(text):
+            start_time = time.time()
+
+            end = start + 8192
+            while end < len(text) - 1 and (text[end] != '.' or text[end + 1] != ' '):
                 end += 1
             chunk = text[start:end]
             translated_chunk = self.translate_text(chunk)
             translated_text += translated_chunk
             start = end
             call_count += 1
-            print(f"Deepseek-v2 API has been called {call_count} times.")
+            
+            end_time = time.time()
+            run_time = end_time - start_time
+            print(f"Deepseek-v2 API has been called {call_count} times. Run time is {run_time:.2f}s.")
     
         self.save_txt(output_path, translated_text)
         print(f"Translation saved to {output_path}")

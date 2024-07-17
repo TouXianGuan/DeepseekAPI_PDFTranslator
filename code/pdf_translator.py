@@ -37,7 +37,7 @@ class PDFTranslator:
         call_count = 0
 
         while start < len(text):
-            end = start + 20000
+            end = start + 10000
             while end < len(text) and text[end] != '.':
                 end += 1
             if end < len(text):
